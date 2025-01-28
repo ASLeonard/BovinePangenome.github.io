@@ -16,6 +16,13 @@ const svg = d3.select("#map")
   //width = +svg.attr("width"),
   //height = +svg.attr("height");
 
+ 
+
+
+            
+  
+          // Initialize with first value
+          //updateVisualization(dataOptions[0]);
 
 
 // Map and projection
@@ -33,7 +40,6 @@ const path = d3.geoPath();
 let data = new Map()
 
 var getMax1 = function (someMap) {
-      console.log(typeof someMap);
       let arr = Object.values(someMap);
       let max = Math.max(...arr);
       return max
@@ -57,75 +63,96 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/w
 d3.csv(csvUrl2).then(data => {
   
   countryCounts = data.reduce((acc, d) => {
-      acc[d.Global_region] = (acc[d.Global_region] || 0) + 1;
+      acc[d['Global region']] = (acc[d['Global region']] || 0) + 1;
       return acc;
-  }, {})})
+  }, {});
+  countryCounts2 = data.reduce((acc, d) => {
+    acc[d.Origin] = (acc[d.Origin] || 0) + 1;
+    return acc;
+  }, {});
+  countryCounts3 = data.reduce((acc, d) => {
+      acc[d.Contributor_origin] = (acc[d.Origin] || 0) + 1;
+      return acc;
+}, {});
+})
 ]).then(function(loadData){
     let topo = loadData[0];
-    console.log(countryCounts);
-
-
-var colorScale = d3.scaleSqrt()
-  .domain([0,getMax1(countryCounts)])
-  .range([0,1]);
 
 const projection = d3.geoEquirectangular()
   .fitSize([width, height], topo);
 
-  let mouseOver = function(d) {
-    d3.selectAll(".Country")
-      .transition()
-      .duration(500)
-      .style("opacity", .5)
-    d3.select(this)
-      .transition()
-      .duration(500)
-      .style("opacity", 1)
-      .attr("stroke-opacity","1")
-      .style("stroke", "black")
-  }
+  const dataOptions = ["Breed origin", "Animal origin", "Contributor origin"];
 
-  let mouseLeave = function(d) {
-    d3.selectAll(".Country")
-      .transition()
-      .duration(200)
-      .style("opacity", .8)
-    d3.select(this)
-      .transition()
-      .duration(200)
-      .attr("stroke-opacity","0")
-      .style("stroke", "transparent")
-  }
+  // Append dropdown to the body and populate it
+  const dropdown = d3.select("#dropdown")
+      .on("change", function(event) {
+          const selectedValue = d3.select(event.target).property("value");
+          updateVisualization(selectedValue);
+      });
+
+  dropdown.selectAll("option")
+      .data(dataOptions)
+      .enter()
+      .append("option")
+      .text(d => d)
+      .attr("value", d => d);
+
+  function updateVisualization(selectedValue) {
+    let color_feature = ""
+    if (selectedValue == "Breed origin") {
+      color_feature = countryCounts;
+    }
+    else if (selectedValue == "Animal origin") {
+      color_feature = countryCounts2;
+    }
+    else if (selectedValue == "Contributor origin") {
+      color_feature = countryCounts3;
+    }
+
+  var colorScale = d3.scaleSqrt()
+    .domain([0,getMax1(color_feature)])
+    .range([0,1]);
+
+    drawMap(svg, topo, color_feature, projection, colorScale);
+}
+const setCountryStyle = (selection, opacity, strokeOpacity, strokeColor) => {
+  selection
+    .transition()
+    .duration(200)
+    .style("opacity", opacity)
+    .attr("stroke-opacity", strokeOpacity)
+    .style("stroke", strokeColor);
+};
 
 
-    // Draw the map
+const drawMap = (svg, topo, colorFeature, projection, colorScale) => {
+  svg.selectAll("*").remove(); 
   svg.append("g")
     .selectAll("path")
     .data(topo.features)
     .join("path")
-      // draw each country
-      .attr("d", d3.geoPath()
-        .projection(projection)
-      )
-      // set the color of each country
-      .attr("fill", function (d) {
-        d.total = countryCounts[d.properties.name] || 0;
+      .attr("d", d3.geoPath().projection(projection))
+      .attr("fill", d => {
+        d.total = colorFeature[d.properties.name] || 0;
         return d3.interpolateInferno(colorScale(d.total));
       })
       .style("stroke", "transparent")
-      .attr("class", function(d){ return "Country" } )
-      .style("opacity", .8)
-      .on("mouseover",(event, d) => {
+      .attr("class", "Country")
+      .style("opacity", 0.8)
+      .on("mouseover",(event, d) => {      
         tooltip.transition().duration(200).style("opacity", 0.9);
         tooltip.html(`${d.properties.name}: ${d.total}`)
             .style("left", (event.pageX + 10) + "px")
             .style("top", (event.pageY - 28) + "px");
         // Highlight the hovered bar and remove other labels
-        svg.selectAll(".Country")
-            .transition()
-            .duration(200)
-            .style("opacity", .8)
+      d3.selectAll(".Country").call(setCountryStyle, 0.2, null, null);
+      d3.select(event.target).call(setCountryStyle, 1, "1", "black");
+
       })
-      .on("mouseout", mouseLeave )
-      //.on("mouseover", mouseOver )
+      .on("mouseleave", (event, d) => {
+        tooltip.transition().duration(200).style("opacity", 0);
+        d3.selectAll(".Country").call(setCountryStyle, 0.8, null, null);
+      }) 
+}
+updateVisualization(dataOptions[0]);
 })

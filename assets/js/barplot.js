@@ -1,6 +1,6 @@
    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPpPEMhMb0ze6VNLahAgrkP225up-FEZl01dLiN4Dj6kEUh3jEo_4u6PLd9-4ffDJOQR7mS6RgRO5N/pub?gid=7259390&single=true&output=csv";
         // Set dimensions and margins for the chart
-        const margin = { top: 20, right: 30, bottom: 100, left: 60 };
+        const margin = { top: 20, right: 30, bottom: 200, left: 60 };
         const width = 800 - margin.left - margin.right;
         const height = 400 - margin.top - margin.bottom;
 
@@ -81,7 +81,8 @@
                         .attr("opacity", b => b.breed === d.breed ? 1 : 0.15);
 
                     svg.selectAll("g.tick text")
-                        .style("opacity", b => b === d.breed ? 1 : 0.15);
+                        .style("opacity", b => b === d.breed ? 1 : 0.15)
+                        .style("font-size", b => b === d.breed ? "24px" : "14px");
                 })
                 .on("mouseout", () => {
                     tooltip.transition().duration(500).style("opacity", 0);
@@ -91,7 +92,8 @@
                         .attr("opacity", 1);
 
                     svg.selectAll("g.tick text")
-                        .style("opacity", 1);
+                        .style("opacity", 1)
+                        .style("font-size", "14px");
                 });
 
             // Add axis labels
