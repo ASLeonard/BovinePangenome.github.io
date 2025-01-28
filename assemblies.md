@@ -5,7 +5,7 @@ categories: [code]
 tags: [code, d3js]
 ext-js: "https://d3js.org/d3.v7.min.js"
 js: "/assets/js/barplot.js"
-css: "/asssets/css/d3.css"
+css: "/assets/css/d3.css"
 ---
 
 

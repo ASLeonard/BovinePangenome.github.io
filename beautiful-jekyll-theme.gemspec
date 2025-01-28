@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   }
 
   spec.add_runtime_dependency "jekyll", ">= 3.9.3"
-  spec.add_runtime_dependency "jekyll-paginate", "~> 1.1"
+  #spec.add_runtime_dependency "jekyll-paginate", "~> 1.1"
   spec.add_runtime_dependency "jekyll-sitemap", "~> 1.4"
   spec.add_runtime_dependency "kramdown-parser-gfm", "~> 1.1"
   spec.add_runtime_dependency "kramdown", "~> 2.3"
@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "appraisal", "~> 2.5"
   spec.add_development_dependency "bigdecimal", "~> 3.1"
+  spec.add_development_dependency "logger", "~> 1.6"
 end

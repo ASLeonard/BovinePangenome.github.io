@@ -3,7 +3,6 @@ PATH
   specs:
     beautiful-jekyll-theme (6.0.1)
       jekyll (>= 3.9.3)
-      jekyll-paginate (~> 1.1)
       jekyll-sitemap (~> 1.4)
       kramdown (~> 2.3)
       kramdown-parser-gfm (~> 1.1)
@@ -55,7 +54,6 @@ GEM
       safe_yaml (~> 1.0)
       terminal-table (>= 1.8, < 4.0)
       webrick (~> 1.7)
-    jekyll-paginate (1.1.0)
     jekyll-sass-converter (3.0.0)
       sass-embedded (~> 1.54)
     jekyll-sitemap (1.4.0)
@@ -71,6 +69,7 @@ GEM
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    logger (1.6.5)
     mercenary (0.4.0)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
@@ -139,6 +138,7 @@ DEPENDENCIES
   beautiful-jekyll-theme!
   bigdecimal (~> 3.1)
   bundler (>= 1.16)
+  logger (~> 1.6)
   rake (~> 12.0)
 
 BUNDLED WITH
